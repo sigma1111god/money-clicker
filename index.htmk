@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>💰 RICH CLICKER — rebirth resets to $0</title>
+    <style>
+        * {
+            user-select: none;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e2a2e, #0f1a1f);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .game-wrapper {
+            max-width: 750px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(8px);
+            border-radius: 80px;
+            padding: 20px 24px 32px;
+            box-shadow: 0 30px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .auth-panel {
+            background: #2c2e3aee;
+            border-radius: 60px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+            border: 1px solid #ffd966;
+        }
+
+        .auth-input {
+            background: #1e1f2c;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 60px;
+            font-size: 1rem;
+            color: #ffefc0;
+            width: 200px;
+            margin: 6px 8px;
+            outline: none;
+            font-weight: bold;
+        }
+
+        .auth-btn {
+            background: #f5b042;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-weight: bold;
+            font-size: 1rem;
+            margin: 6px 6px;
+            cursor: pointer;
+            color: #1e2a2e;
+            box-shadow: 0 4px 0 #8b5a2b;
+        }
+
+        .auth-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #8b5a2b;
+        }
+
+        .logged-user {
+            font-size: 0.9rem;
+            background: #00000066;
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 40px;
+            margin-top: 8px;
+            color: #ffeaac;
+        }
+
+        .money-card {
+            text-align: center;
+            background: radial-gradient(circle at 30% 10%, #2a2418, #0f0e0a);
+            border-radius: 70px;
+            margin: 15px 0;
+            padding: 18px 10px;
+            border: 1px solid gold;
+        }
+
+        .money-amount {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFE6B0, #FFB347);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            word-break: break-word;
+        }
+
+        .click-area {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0 15px;
+        }
+
+        .money-btn {
+            background: radial-gradient(circle at 35% 30%, #FFD966, #E6A017);
+            width: 210px;
+            height: 210px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            cursor: pointer;
+            box-shadow: 0 20px 30px rgba(0,0,0,0.4), inset 0 -8px 0 #a45d2e;
+            animation: gentleBreathe 2.2s infinite ease-in-out;
+        }
+
+        @keyframes gentleBreathe {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .money-btn:active {
+            transform: scale(0.96);
+        }
+
+        .section-title {
+            color: #ffd966;
+            margin: 15px 0 10px 0;
+            font-size: 1.3rem;
+            border-left: 5px solid gold;
+            padding-left: 15px;
+        }
+
+        .upgrades-panel, .shop-panel {
+            background: #1e262cd9;
+            border-radius: 48px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .upgrade, .shop-item {
+            background: #2f3b36;
+            margin: 8px 0;
+            padding: 10px 15px;
+            border-radius: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            border-left: 6px solid #ffbc3c;
+        }
+
+        .info {
+            flex: 2;
+            font-weight: bold;
+            color: #f9e0a0;
+            font-size: 0.9rem;
+        }
+
+        .cost {
+            background: #00000088;
+            padding: 5px 12px;
+            border-radius: 40px;
+            font-family: monospace;
+            font-weight: bold;
+        }
+
+        .buy-btn {
+            background: #f0a500;
+            border: none;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .rebirth-area {
+            background: linear-gradient(95deg, #2a1e2e, #1a1220);
+            margin-top: 20px;
+            border-radius: 60px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #c97eff;
+        }
+
+        .rebirth-btn {
+            background: #b45eff;
+            color: white;
+            padding: 10px 25px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 60px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #5e2a8a;
+            transition: 0.1s;
+        }
+
+        .rebirth-btn:disabled {
+            background: #555;
+            box-shadow: none;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            background: #00000066;
+            border-radius: 60px;
+            padding: 8px 15px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .floating-money {
+            position: fixed;
+            pointer-events: none;
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #FFD966;
+            z-index: 9999;
+            animation: flyUpFade 0.9s ease-out forwards;
+        }
+
+        @keyframes flyUpFade {
+            0% { opacity: 1; transform: translate(0, 0) scale(0.7);}
+            100% { opacity: 0; transform: translate(var(--dx, 40px), var(--dy, -110px)) scale(1.3);}
+        }
+
+        .spotify-widget {
+            margin-top: 20px;
+            background: #121212;
+            border-radius: 40px;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .spotify-note a {
+            color: #1DB954;
+            text-decoration: none;
+        }
+
+        button:active { transform: scale(0.96); }
+        .badge { font-size: 0.7rem; background: gold; color: black; border-radius: 30px; padding: 2px 8px; margin-left: 5px; }
+        .requirement { font-size: 0.75rem; color: #ffaa66; margin-top: 5px; }
+        .next-cost { font-size: 0.7rem; color: #aaa; margin-top: 3px; }
+    </style>
+</head>
+<body>
+<div class="game-wrapper" id="gameRoot">
+    <div class="auth-panel" id="authPanel">
+        <input type="text" id="loginUsername" class="auth-input" placeholder="Username">
+        <input type="password" id="loginPassword" class="auth-input" placeholder="Password">
+        <button class="auth-btn" id="signupBtn">🔐 SIGN UP</button>
+        <button class="auth-btn" id="loginBtn">✅ LOGIN</button>
+        <div id="authStatus" class="logged-user">⚡ Create account to save progress</div>
+    </div>
+
+    <div id="gameContent" style="display: none;">
+        <div class="money-card">
+            <div class="money-amount" id="moneyDisplay">$0</div>
+            <div>💰 your fortune 💰</div>
+        </div>
+
+        <div class="click-area">
+            <div class="money-btn" id="clickButton">💵</div>
+        </div>
+
+        <div class="upgrades-panel">
+            <div class="section-title">✨ UPGRADES (click & income)</div>
+            <div id="upgradesList"></div>
+        </div>
+
+        <div class="shop-panel">
+            <div class="section-title">🛒 SHOP (permanent bonuses)</div>
+            <div id="shopList"></div>
+        </div>
+
+        <div class="rebirth-area">
+            <div><span class="badge">🌟 REBIRTH 🌟</span> Prestige for permanent multiplier</div>
+            <div style="font-size:0.8rem;" id="rebirthInfo">🔮 Rebirths: 0 | Bonus: +0% money</div>
+            <button class="rebirth-btn" id="rebirthBtn">🌀 REBIRTH (scaling cost)</button>
+            <div class="requirement" id="rebirthRequirement">💰 Need $100,000 to rebirth</div>
+            <div class="next-cost" id="nextCostDisplay">⬆️ Next rebirth cost increase: +$556,767</div>
+        </div>
+
+        <div class="stats">
+            <span>💪 Click power: <strong id="clickPowerVal">1</strong></span>
+            <span>🤖 Income/sec: <strong id="incomePerSec">0</strong></span>
+            <span>🔁 Total clicks: <strong id="totalClicks">0</strong></span>
+            <span>✨ Rebirths: <strong id="rebirthCount">0</strong></span>
+        </div>
+
+        <div class="spotify-widget">
+            <iframe src="https://open.spotify.com/embed/playlist/1JyNocQUPKRElybNK2n56U?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen"></iframe>
+            <div class="spotify-note">🎧 <a href="https://open.spotify.com/playlist/1JyNocQUPKRElybNK2n56U" target="_blank">Open in Spotify app</a> for full songs (Premium)</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ------------------- REBIRTH COST FORMULA -------------------
+    // Base cost for first rebirth: 100,000
+    // Each rebirth increases cost by 556,767
+    const BASE_REBIRTH_COST = 100000;
+    const REBIRTH_INCREMENT = 556767;
+    
+    function getCurrentRebirthCost(rebirthCount) {
+        // rebirthCount = how many rebirths you have ALREADY done
+        // cost for NEXT rebirth = BASE + (rebirthCount * INCREMENT)
+        return BASE_REBIRTH_COST + (rebirthCount * REBIRTH_INCREMENT);
+    }
+    
+    function getInitialGameData() {
+        return {
+            money: 0,
+            clickPower: 1,
+            totalClicks: 0,
+            rebirths: 0,
+            rebirthBonus: 1.0,
+            upgrades: {
+                clickMulti: { level: 0, baseCost: 15, multiplier: 1.8, powerBonus: 1, incomeBonus: 0 },
+                autoTeller: { level: 0, baseCost: 40, multiplier: 1.6, powerBonus: 0, incomeBonus: 1 },
+                goldMine: { level: 0, baseCost: 120, multiplier: 1.7, powerBonus: 0, incomeBonus: 4 },
+                bankManager: { level: 0, baseCost: 350, multiplier: 1.65, powerBonus: 3, incomeBonus: 0 }
+            },
+            shop: {
+                critCharm: { level: 0, baseCost: 200 },
+                goldenTicket: { level: 0, baseCost: 500 },
+                timeWarp: { level: 0, baseCost: 1200 },
+                gemOfGreed: { level: 0, baseCost: 3000 },
+                ancientScroll: { level: 0, baseCost: 8000 }
+            }
+        };
+    }
+
+    let gameData = getInitialGameData();
+    
+    let critChance = 0;
+    let extraClickFlat = 0;
+    let extraRebirthMulti = 0;
+    let ancientDoubleChance = 0;
+
+    const upgradeDefs = {
+        clickMulti: { name: "💪 Stronger Fingers", desc: "+1 per click" },
+        autoTeller: { name: "🤖 Auto Teller", desc: "+$1 / sec" },
+        goldMine: { name: "⛏️ Gold Mine", desc: "+$4 / sec" },
+        bankManager: { name: "🏦 Bank Manager", desc: "+3 click power" }
+    };
+
+    const shopDefs = {
+        critCharm: { name: "🍀 Lucky Coin", desc: "+2% crit chance (2x money)" },
+        goldenTicket: { name: "🎫 Golden Ticket", desc: "+1 extra money per click" },
+        timeWarp: { name: "⏳ Time Warp", desc: "+5% global income" },
+        gemOfGreed: { name: "💎 Gem of Greed", desc: "+0.1 rebirth multiplier bonus" },
+        ancientScroll: { name: "📜 Ancient Scroll", desc: "+10% chance to double click money" }
+    };
+
+    let autoInterval = null;
+    let currentUser = null;
+    let usersDB = {};
+    let audioCtx = null;
+
+    function recalcAllBonuses() {
+        let bonusClick = 0;
+        bonusClick += gameData.upgrades.clickMulti.level * gameData.upgrades.clickMulti.powerBonus;
+        bonusClick += gameData.upgrades.bankManager.level * gameData.upgrades.bankManager.powerBonus;
+        let baseClickPower = 1 + bonusClick;
+        
+        extraClickFlat = gameData.shop.goldenTicket.level * 1;
+        gameData.clickPower = baseClickPower + extraClickFlat;
+        
+        let rawIncome = 0;
+        rawIncome += gameData.upgrades.autoTeller.level * gameData.upgrades.autoTeller.incomeBonus;
+        rawIncome += gameData.upgrades.goldMine.level * gameData.upgrades.goldMine.incomeBonus;
+        
+        let timeWarpMult = 1 + (gameData.shop.timeWarp.level * 0.05);
+        let finalIncomeMult = timeWarpMult * gameData.rebirthBonus;
+        let finalIncome = Math.floor(rawIncome * finalIncomeMult);
+        
+        critChance = gameData.shop.critCharm.level * 2;
+        extraRebirthMulti = gameData.shop.gemOfGreed.level * 0.1;
+        ancientDoubleChance = gameData.shop.ancientScroll.level * 0.1;
+        
+        updateRebirthBonus();
+        
+        return finalIncome;
+    }
+    
+    function updateRebirthBonus() {
+        let bonus = 1 + (gameData.rebirths * 0.2) + extraRebirthMulti;
+        gameData.rebirthBonus = Math.max(1.0, bonus);
+    }
+
+    function addMoney(amount, fromClick = false) {
+        if(amount <= 0) return;
+        let finalAmount = amount;
+        
+        if(fromClick) {
+            let random = Math.random() * 100;
+            if(random < critChance) {
+                finalAmount = amount * 2;
+                spawnFloatingText("⚡ CRIT! x2", "#ffaa44");
+            }
+            if(ancientDoubleChance > 0 && Math.random() < ancientDoubleChance) {
+                finalAmount = finalAmount * 2;
+                spawnFloatingText("📜 DOUBLE!", "#c97eff");
+            }
+            gameData.totalClicks += 1;
+            playDing();
+            spawnFlyingMoney();
+        }
+        
+        gameData.money += finalAmount;
+        if(gameData.money < 0) gameData.money = 0;
+        updateUI();
+        saveProgress();
+    }
+
+    function spawnFloatingText(text, color) {
+        const btn = document.getElementById("clickButton");
+        if(!btn) return;
+        const rect = btn.getBoundingClientRect();
+        const span = document.createElement("div");
+        span.innerText = text;
+        span.style.position = "fixed";
+        span.style.left = (rect.left + rect.width/2 - 30) + "px";
+        span.style.top = (rect.top - 20) + "px";
+        span.style.color = color;
+        span.style.fontWeight = "bold";
+        span.style.textShadow = "0 0 3px black";
+        span.style.pointerEvents = "none";
+        span.style.zIndex = "9999";
+        span.style.fontSize = "1.2rem";
+        span.style.animation = "flyUpFade 0.8s ease-out forwards";
+        document.body.appendChild(span);
+        setTimeout(() => span.remove(), 800);
+    }
+
+    function playDing() {
+        try {
+            if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.frequency.value = 1460;
+            gain.gain.value = 0.2;
+            osc.type = 'sine';
+            gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.5);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.4);
+        } catch(e) {}
+    }
+
+    function spawnFlyingMoney() {
+        const clickBtn = document.getElementById("clickButton");
+        if(!clickBtn) return;
+        const rect = clickBtn.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        for(let i=0; i<12; i++) {
+            const span = document.createElement("div");
+            span.innerText = Math.random() > 0.5 ? "💵" : "💰";
+            span.classList.add("floating-money");
+            const dx = (Math.random() - 0.5) * 120;
+            const dy = -Math.random() * 100 - 30;
+            span.style.left = (centerX - 15) + "px";
+            span.style.top = (centerY - 15) + "px";
+            span.style.setProperty('--dx', dx + 'px');
+            span.style.setProperty('--dy', dy + 'px');
+            document.body.appendChild(span);
+            setTimeout(() => span.remove(), 900);
+        }
+    }
+
+    function buyUpgrade(upgradeId) {
+        const up = gameData.upgrades[upgradeId];
+        if(!up) return;
+        let cost = Math.floor(up.baseCost * Math.pow(up.multiplier, up.level));
+        if(gameData.money >= cost) {
+            gameData.money -= cost;
+            up.level += 1;
+            recalcAllBonuses();
+            updateUI();
+            saveProgress();
+            playDing();
+            spawnFlyingMoney();
+        } else showNotEnough();
+    }
+
+    function buyShopItem(shopId) {
+        const item = gameData.shop[shopId];
+        if(!item) return;
+        let cost = Math.floor(item.baseCost * Math.pow(1.5, item.level));
+        if(gameData.money >= cost) {
+            gameData.money -= cost;
+            item.level += 1;
+            recalcAllBonuses();
+            updateUI();
+            saveProgress();
+            playDing();
+            spawnFlyingMoney();
+        } else showNotEnough();
+    }
+
+    function showNotEnough() {
+        const statusDiv = document.getElementById("authStatus");
+        if(statusDiv && currentUser) {
+            statusDiv.style.background = "#aa2e1e";
+            statusDiv.innerText = "❌ Not enough money! Keep clicking 💰";
+            setTimeout(() => {
+                if(currentUser) statusDiv.innerText = `✅ ${currentUser} · auto-save ON`;
+                else statusDiv.innerText = "⚡ Login to save progress";
+                statusDiv.style.background = "";
+            }, 1200);
+        }
+    }
+
+    // FIXED: Rebirth now resets you to $0 (no money carried over)
+    function performRebirth() {
+        const currentRebirthCost = getCurrentRebirthCost(gameData.rebirths);
+        
+        if(gameData.money < currentRebirthCost) {
+            const statusDiv = document.getElementById("authStatus");
+            if(statusDiv) {
+                statusDiv.style.background = "#aa2e1e";
+                statusDiv.innerText = `❌ Need $${currentRebirthCost.toLocaleString()} to rebirth! You have $${Math.floor(gameData.money).toLocaleString()}`;
+                setTimeout(() => {
+                    if(currentUser) statusDiv.innerText = `✅ ${currentUser} · auto-save ON`;
+                    else statusDiv.innerText = "⚡ Login to save progress";
+                    statusDiv.style.background = "";
+                }, 2000);
+            }
+            return;
+        }
+        
+        let bonusPercent = Math.floor((gameData.rebirthBonus - 1) * 100);
+        let nextCost = getCurrentRebirthCost(gameData.rebirths + 1);
+        
+        if(confirm(`🌀 REBIRTH will COST $${currentRebirthCost.toLocaleString()} and reset EVERYTHING to ZERO:\n- All upgrades & shop items will be lost\n- Total clicks reset to 0\n- Your money will go back to $0\n\nYou KEEP: ${gameData.rebirths} rebirths → after this: ${gameData.rebirths + 1} rebirths (${bonusPercent + 20}% permanent money bonus)\n\nNEXT rebirth cost: $${nextCost.toLocaleString()}\n\nContinue?`)) {
+            
+            // Increment rebirth count
+            let newRebirthCount = gameData.rebirths + 1;
+            
+            // COMPLETE RESET - start fresh with $0
+            gameData = getInitialGameData();
+            gameData.rebirths = newRebirthCount;
+            gameData.money = 0;  // Force $0 (already 0 from getInitialGameData but explicit)
+            
+            updateRebirthBonus();
+            recalcAllBonuses();
+            updateUI();
+            saveProgress();
+            
+            spawnFloatingText(`🌟 REBIRTH ${gameData.rebirths} | +${Math.floor((gameData.rebirthBonus-1)*100)}% BONUS`, "#ffaa66");
+            playDing();
+            for(let i=0;i<30;i++) spawnFlyingMoney();
+        }
+    }
+
+    function updateUI() {
+        const rebirthCost = getCurrentRebirthCost(gameData.rebirths);
+        const nextRebirthCost = getCurrentRebirthCost(gameData.rebirths + 1);
+        
+        document.getElementById("moneyDisplay").innerHTML = "$" + Math.floor(gameData.money).toLocaleString();
+        document.getElementById("clickPowerVal").innerText = gameData.clickPower;
+        let currentIncome = recalcAllBonuses();
+        document.getElementById("incomePerSec").innerText = currentIncome;
+        document.getElementById("totalClicks").innerText = gameData.totalClicks;
+        document.getElementById("rebirthCount").innerText = gameData.rebirths;
+        document.getElementById("rebirthInfo").innerHTML = `🔮 Rebirths: ${gameData.rebirths} | Bonus: +${Math.floor((gameData.rebirthBonus-1)*100)}% money ✨`;
+        
+        // Update rebirth button state based on money requirement
+        const rebirthBtn = document.getElementById("rebirthBtn");
+        const requirementText = document.getElementById("rebirthRequirement");
+        const nextCostDisplay = document.getElementById("nextCostDisplay");
+        
+        if(rebirthBtn) {
+            if(gameData.money >= rebirthCost) {
+                rebirthBtn.disabled = false;
+                rebirthBtn.style.background = "#b45eff";
+                if(requirementText) requirementText.innerHTML = `✅ Ready to rebirth! Cost: $${rebirthCost.toLocaleString()}`;
+            } else {
+                rebirthBtn.disabled = true;
+                rebirthBtn.style.background = "#555";
+                if(requirementText) requirementText.innerHTML = `💰 Need $${rebirthCost.toLocaleString()} to rebirth (have $${Math.floor(gameData.money).toLocaleString()})`;
+            }
+        }
+        
+        if(nextCostDisplay) {
+            if(gameData.rebirths === 0) {
+                nextCostDisplay.innerHTML = `⬆️ 1st rebirth: $${rebirthCost.toLocaleString()} | Next: $${nextRebirthCost.toLocaleString()} (+$${REBIRTH_INCREMENT.toLocaleString()})`;
+            } else {
+                nextCostDisplay.innerHTML = `⬆️ Rebirth #${gameData.rebirths + 1} costs $${nextRebirthCost.toLocaleString()} (+$${REBIRTH_INCREMENT.toLocaleString()} increase)`;
+            }
+        }
+
+        // Render upgrades
+        const upContainer = document.getElementById("upgradesList");
+        if(upContainer) {
+            upContainer.innerHTML = "";
+            for(let [id, up] of Object.entries(gameData.upgrades)) {
+                let cost = Math.floor(up.baseCost * Math.pow(up.multiplier, up.level));
+                let bonusText = up.powerBonus > 0 ? `+${up.powerBonus * up.level} click` : `+${up.incomeBonus * up.level} $/sec`;
+                const div = document.createElement("div");
+                div.className = "upgrade";
+                div.innerHTML = `<div class="info"><strong>${upgradeDefs[id].name}</strong> Lv${up.level}<br><span style="font-size:0.7rem;">${bonusText}</span></div>
+                                 <div class="cost">💰 ${cost}</div><button class="buy-btn" data-id="${id}" data-type="upgrade">BUY</button>`;
+                upContainer.appendChild(div);
+            }
+        }
+
+        // Render shop
+        const shopContainer = document.getElementById("shopList");
+        if(shopContainer) {
+            shopContainer.innerHTML = "";
+            for(let [id, item] of Object.entries(gameData.shop)) {
+                let cost = Math.floor(item.baseCost * Math.pow(1.5, item.level));
+                let effectDesc = "";
+                if(id === "critCharm") effectDesc = `${item.level*2}% crit chance`;
+                else if(id === "goldenTicket") effectDesc = `+${item.level} extra/click`;
+                else if(id === "timeWarp") effectDesc = `+${item.level*5}% income`;
+                else if(id === "gemOfGreed") effectDesc = `+${item.level*0.1} rebirth mult`;
+                else if(id === "ancientScroll") effectDesc = `${item.level*10}% double click`;
+                const div = document.createElement("div");
+                div.className = "shop-item";
+                div.innerHTML = `<div class="info"><strong>${shopDefs[id].name}</strong> Lv${item.level}<br><span style="font-size:0.7rem;">${shopDefs[id].desc}<br>✨ ${effectDesc}</span></div>
+                                 <div class="cost">💰 ${cost}</div><button class="buy-btn" data-id="${id}" data-type="shop">BUY</button>`;
+                shopContainer.appendChild(div);
+            }
+        }
+
+        document.querySelectorAll(".buy-btn").forEach(btn => {
+            btn.removeEventListener("click", handleBuy);
+            btn.addEventListener("click", handleBuy);
+        });
+    }
+
+    function handleBuy(e) {
+        const id = e.currentTarget.getAttribute("data-id");
+        const type = e.currentTarget.getAttribute("data-type");
+        if(type === "upgrade") buyUpgrade(id);
+        else if(type === "shop") buyShopItem(id);
+    }
+
+    function onMainClick() {
+        if(!currentUser) return;
+        let gain = gameData.clickPower;
+        gain = Math.floor(gain * gameData.rebirthBonus);
+        addMoney(gain, true);
+        const btn = document.getElementById("clickButton");
+        if(btn) {
+            btn.style.transform = "scale(0.96)";
+            setTimeout(() => { if(btn) btn.style.transform = ""; }, 100);
+        }
+    }
+
+    // AUTH & STORAGE
+    function loadUsersFromStorage() {
+        const stored = localStorage.getItem("richclicker_scaling_v2");
+        if(stored) usersDB = JSON.parse(stored);
+        else usersDB = {};
+    }
+    function saveUsersToStorage() { localStorage.setItem("richclicker_scaling_v2", JSON.stringify(usersDB)); }
+    function saveProgress() {
+        if(!currentUser || !usersDB[currentUser]) return;
+        usersDB[currentUser].gameData = JSON.parse(JSON.stringify(gameData));
+        saveUsersToStorage();
+    }
+    function loadProgressToGame(username) {
+        if(usersDB[username]?.gameData) {
+            gameData = JSON.parse(JSON.stringify(usersDB[username].gameData));
+        } else {
+            gameData = getInitialGameData();
+        }
+        updateRebirthBonus();
+        recalcAllBonuses();
+        updateUI();
+    }
+    function signupUser() {
+        const user = document.getElementById("loginUsername").value.trim();
+        const pass = document.getElementById("loginPassword").value.trim();
+        if(!user || !pass) { document.getElementById("authStatus").innerText = "❌ Enter user/pass"; return; }
+        if(usersDB[user]) { document.getElementById("authStatus").innerText = "⚠️ User exists"; return; }
+        usersDB[user] = { password: pass, gameData: null };
+        saveUsersToStorage();
+        document.getElementById("authStatus").innerText = "✅ Account created! Now login.";
+    }
+    function loginUser() {
+        const user = document.getElementById("loginUsername").value.trim();
+        const pass = document.getElementById("loginPassword").value.trim();
+        if(!usersDB[user] || usersDB[user].password !== pass) { document.getElementById("authStatus").innerText = "❌ Invalid credentials"; return; }
+        currentUser = user;
+        loadProgressToGame(user);
+        document.getElementById("authPanel").style.opacity = "0.7";
+        document.getElementById("gameContent").style.display = "block";
+        document.getElementById("authStatus").innerHTML = `✅ Logged as ${user} · auto-save ON`;
+        if(autoInterval) clearInterval(autoInterval);
+        autoInterval = setInterval(() => {
+            if(currentUser && document.getElementById("gameContent").style.display === "block") {
+                let income = recalcAllBonuses();
+                if(income > 0) addMoney(income, false);
+                updateUI();
+            }
+        }, 1000);
+        const clickBtn = document.getElementById("clickButton");
+        if(clickBtn) clickBtn.addEventListener("click", onMainClick);
+        document.getElementById("rebirthBtn").addEventListener("click", performRebirth);
+    }
+    window.addEventListener("beforeunload", () => { if(currentUser) saveProgress(); });
+    function init() {
+        loadUsersFromStorage();
+        document.getElementById("signupBtn").addEventListener("click", signupUser);
+        document.getElementById("loginBtn").addEventListener("click", loginUser);
+        document.body.addEventListener("click", () => { if(audioCtx && audioCtx.state === "suspended") audioCtx.resume(); }, { once: true });
+    }
+    init();
+</script>
+</body>
+</html>
